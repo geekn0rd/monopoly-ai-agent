@@ -78,7 +78,7 @@ class MonopolyGame:
             curr_prop.owner = self.current_player
         elif action == 2:
             curr_player.money -= curr_prop.rent
-            self.players[curr_prop.owner].money += curr_prop.rent
+            new_players[curr_prop.owner].money += curr_prop.rent
         
         return MonopolyGame(new_board, new_players, self.current_player, self.game_over)
     
