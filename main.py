@@ -1,121 +1,166 @@
+# Import any required libraries
 import random
+from copy import deepcopy
 
+# Define the Player class
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, position, money):
         self.name = name
-        self.money = 1500
-        self.position = 0
-
-    def move(self, steps, board):
-        self.position = (self.position + steps) % len(board.properties)
-
-    def purchase_property(self, property):
-        if self.money >= property.price:
-            self.money -= property.price
-            property.owner = self
-            return True
-        else:
-            return False
-
-    def pay_rent(self, property):
-        if self.money >= property.rent:
-            self.money -= property.rent
-            property.owner.money += property.rent
-            return True
-        else:
-            return False
-
-class Property:
-    def __init__(self, name, price, rent):
-        self.name = name
-        self.price = price
-        self.owner = None
-        self.rent = rent
-
-    def is_owned(self):
-        return self.owner is not None
-
-class Board:
-    def __init__(self):
+        self.position = position
+        self.money = money
         self.properties = []
-        # Add properties to the board during initialization
-        self.properties.append(Property("Mediterranean Avenue", 60, 2))
-        self.properties.append(Property("Baltic Avenue", 60, 4))
-        self.properties.append(Property("Reading Railroad", 200, 25))
-        self.properties.append(Property("Oriental Avenue", 100, 6))
-        self.properties.append(Property("Vermont Avenue", 100, 6))
-        self.properties.append(Property("Connecticut Avenue", 120, 8))
-        self.properties.append(Property("St. Charles Place", 140, 10))
-        self.properties.append(Property("Electric Company", 150, 0))
-        self.properties.append(Property("States Avenue", 140, 10))
-        self.properties.append(Property("Virginia Avenue", 160, 12))
-        self.properties.append(Property("Pennsylvania Railroad", 200, 25))
-        self.properties.append(Property("St. James Place", 180, 14))
-        self.properties.append(Property("Tennessee Avenue", 180, 14))
-        self.properties.append(Property("New York Avenue", 200, 16))
-        self.properties.append(Property("Kentucky Avenue", 220, 18))
-        self.properties.append(Property("Indiana Avenue", 220, 18))
-        self.properties.append(Property("Illinois Avenue", 240, 20))
-        self.properties.append(Property("B. & O. Railroad", 200, 25))
-        self.properties.append(Property("Atlantic Avenue", 260, 22))
-        self.properties.append(Property("Ventnor Avenue", 260, 22))
-        self.properties.append(Property("Water Works", 150, 0))
-        self.properties.append(Property("Marvin Gardens", 280, 24))
-        self.properties.append(Property("Pacific Avenue", 300, 26))
-        self.properties.append(Property("North Carolina Avenue", 300, 26))
-        self.properties.append(Property("Community Chest", 0, 0))
-        self.properties.append(Property("Pennsylvania Avenue", 320, 28))
-        self.properties.append(Property("Short Line", 200, 25))
-        self.properties.append(Property("Park Place", 350, 35))
-        self.properties.append(Property("Chance", 0, 0))
-        self.properties.append(Property("Boardwalk", 400, 50))
 
-    def get_property(self, position):
-        return self.properties[position]
+    def roll_dice(self):
+        # Roll the dice and return the result
+        dice1 = random.randint(1, 6)
+        dice2 = random.randint(1, 6)
+        return dice1, dice2
+    
+    def net_worth(self, props):
+        return self.money + sum([props[i].price for i in self.properties])
+    
+    def __str__(self):
+        return f"{self.name} (Position: {self.position}, Money: {self.money}, Properties: {self.properties})"
 
+
+# Define the Property class
+class Property:
+    def __init__(self, name, position, price, rent, ownable=True):
+        self.name = name
+        self.position = position
+        self.price = price
+        self.rent = rent
+        self.ownable = ownable
+        if ownable:
+            self.owner = None
+    
+    def __str__(self):
+        return f"{self.name} (Price: {self.price}, Rent: {self.rent})"
+
+
+# Define the Monopoly game class
 class MonopolyGame:
-    def __init__(self, players):
-        self.players = players
-        self.board = Board()
+    def __init__(self, board=[], players=[], current_player=0, game_over=False):
+        # Initialize the game state
+        self.board = board  # List to represent the game board
+        self.players = players  # List to represent the players
+        self.current_player = current_player  # Index of the current player in the players list
+        self.game_over = game_over  # Boolean flag to indicate if the game is over
+    
+    def initialize_board(self):
+        # Initialize the game board with properties, cards, and other game elements
+        # Example: Create three properties with initial attributes
+        go = Property("Go", 0, 0, 0, False)
+        property1 = Property("Property 1", 1, 200, 20)
+        property2 = Property("Property 2", 2, 300, 30)
+        property3 = Property("Property 3", 3, 400, 40)
+        self.board = [go, property1, property2, property3]
+
+    def initialize_players(self):
+        # Initialize the players with their starting positions, money, and other attributes
+        # Example: Create two players with initial attributes
+        player1 = Player("P1", 0, 1500)
+        player2 = Player("P2", 0, 1500)
+        self.players = [player1, player2]
+
+    def make_move(self, action):
+        # Update the game state based on the action taken by the current player
+        new_players = deepcopy(self.players)
+        new_board = deepcopy(self.board)
+        curr_player = new_players[self.current_player]
+        curr_position = curr_player.position
+        curr_prop = new_board[curr_position]
+        if action == 0:
+            pass
+        elif action == 1:
+            curr_player.money -= curr_prop.price
+            curr_player.properties.append(curr_position)
+            curr_prop.owner = self.current_player
+        elif action == 2:
+            curr_player.money -= curr_prop.rent
+            self.players[curr_prop.owner].money += curr_prop.rent
+        
+        return MonopolyGame(new_board, new_players, self.current_player, self.game_over)
+    
+    def get_possible_moves(self):
+        # Get the possible moves available to the current player
+        curr_player = self.players[self.current_player]
+        curr_position = curr_player.position
+        # Update the player's position based on the dice roll result
+        dice_result = curr_player.roll_dice()
+        total = sum(dice_result)
+        curr_position = (curr_position + total) % len(self.board)
+        curr_player.position = curr_position
+        curr_prop = self.board[curr_position]
+        if curr_prop.ownable:
+            if curr_prop.owner == self.current_player:
+                return 0, "make house and hotel"
+            elif curr_prop.owner == None:
+
+                return 1, f"buy or pass, prop, pos = {curr_position}"
+            else:
+                return 2, "pay rent to the owner"
+        return 3, "nothing chill"
+    
+    def is_terminal(self):
+        # Check if the game has reached a terminal state
+        curr_player = self.players[self.current_player]
+        if curr_player.money <= 0:
+            return True
+        return False
+    
+    def evaluate_utility(self):
+        curr_player = self.players[self.current_player]
+        # Evaluate the utility of the current game state for the current player
+        return curr_player.net_worth(self.board)
+
+    def switch_player(self):
+        # Switch to the next player's turn
+        self.current_player += 1
+        self.current_player %= 2
 
 
-    def play(self):
-        while True:
-            for player in self.players:
-                print(f"It's {player.name}'s turn!")
-                dice = roll_dice()
-                print(f"current position: {player.position}")
-                print(f"dice rolled: {dice}")
-                player.move(dice, self.board)
-                print(f"new position: {player.position}")
-                property = self.board.get_property(player.position)
-                if property.is_owned():
-                    if property.owner == player:
-                        print(f"You landed on your own property: {property.name}")
-                    else:
-                        print(f"You landed on {property.name} which is owned by {property.owner.name}.")
-                        if player.pay_rent(property):
-                            print(f"You paid {property.owner.name} ${property.rent} in rent.")
-                        else:
-                            print("You don't have enough money to pay rent. Game over!")
-                            return
-                else:
-                    print(f"You landed on {property.name} which is unowned.")
-                    choice = input("Do you want to buy it? (yes/no): ")
-                    if choice.lower() == 'yes':
-                        if player.purchase_property(property):
-                            print(f"You bought {property.name} for ${property.price}.")
-                        else:
-                            print("You don't have enough money to buy the property. Game over!")
-                            return
-
-def roll_dice():
-    # Helper function to simulate rolling dice
-    return random.randint(1, 6) + random.randint(1, 6)
+def minimax(state, depth=3):
+    # Minimax algorithm to search for the best move
+    if state.is_terminal() or depth == 0:
+        return state.evaluate_utility(), None
+    max_eval = float('-inf')
+    best_move = None
+    possible_moves, _ = state.get_possible_moves()
+    possible_moves = [possible_moves]
+    for move in possible_moves:
+        # Make the move in a copy of the state
+        new_state = state.make_move(move)
+        # Recursively call minimax on the new state with depth reduced by 1
+        eval, _ = minimax(new_state, depth - 1)
+        if eval > max_eval:
+            max_eval = eval
+            best_move = move
+    return max_eval, best_move
 
 
+def play(state):
+        # Main game loop to play the game
+        while not state.game_over:
+            curr_player = state.players[state.current_player]
+            curr_position = curr_player.position
+            print(curr_player)
+            # possible_moves, _ = self.get_possible_moves()
+            # possible_moves = [possible_moves]
+            _, best_action = minimax(state)
+            # action, _ = self.get_possible_moves()
+            state = state.make_move(best_action)
+            print(state.players[state.current_player])
+            #print(self.board[curr_position])
+            if state.is_terminal():
+                state.game_over = True
+            else:
+                state.switch_player()
+        print(f"{state.players[state.current_player].name} Lost :)")   
+
+# Driver code to start the Monopoly game
 if __name__ == "__main__":
-    p1 = Player("AI")
-    p2 = Player("Human")
-    game = MonopolyGame([p1, p2])
-    game.play()
+    game = MonopolyGame()
+    game.initialize_players()
+    game.initialize_board()
+    play(game)
