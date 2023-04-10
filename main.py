@@ -78,9 +78,10 @@ class MonopolyGame:
         if action == 0:
             pass
         elif action == 1:
-            curr_player.money -= curr_prop.price
-            curr_player.properties.append(curr_position)
-            curr_prop.owner = self.current_player
+            if curr_player.money > curr_prop.price:
+                curr_player.money -= curr_prop.price
+                curr_player.properties.append(curr_position)
+                curr_prop.owner = self.current_player
         elif action == 2:
             curr_player.money -= curr_prop.rent
             new_players[curr_prop.owner].money += curr_prop.rent
