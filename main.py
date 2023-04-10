@@ -17,7 +17,7 @@ class Player:
         return dice1, dice2
     
     def net_worth(self, props):
-        return self.money + sum([props[i].price for i in self.properties])
+        return self.money + sum([props[i].price for i in self.properties]) + sum([props[i].rent for i in self.properties])
     
     def __str__(self):
         return f"{self.name} (Position: {self.position}, Money: {self.money}, Properties: {self.properties})"
@@ -75,13 +75,12 @@ class MonopolyGame:
         curr_player = new_players[self.current_player]
         curr_position = curr_player.position
         curr_prop = new_board[curr_position]
-        if action == 0:
+        if action in [0, -1]:
             pass
         elif action == 1:
-            if curr_player.money > curr_prop.price:
-                curr_player.money -= curr_prop.price
-                curr_player.properties.append(curr_position)
-                curr_prop.owner = self.current_player
+            curr_player.money -= curr_prop.price
+            curr_player.properties.append(curr_position)
+            curr_prop.owner = self.current_player    
         elif action == 2:
             curr_player.money -= curr_prop.rent
             new_players[curr_prop.owner].money += curr_prop.rent
@@ -100,12 +99,14 @@ class MonopolyGame:
         curr_prop = self.board[curr_position]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
-                return 0, "make house and hotel"
+                return [0], "make house and hotel"
             elif curr_prop.owner == None:
-                return 1, f"buy or pass, prop, pos = {curr_position}"
+                if curr_player.money > curr_prop.price:
+                    return [1, -1], f"buy or pass"
+                return [-1], "can't buy"
             else:
-                return 2, "pay rent to the owner"
-        return 3, "nothing chill"
+                return [2], "pay rent to the owner"
+        return [3], "nothing chill"
     
     def is_terminal(self):
         # Check if the game has reached a terminal state
@@ -131,7 +132,6 @@ def minimax(state, depth=3, max_player=True):
         return state.evaluate_utility(), None
     best_move = None
     possible_moves, _ = state.get_possible_moves()
-    possible_moves = [possible_moves]
     if max_player:
         max_eval = float('-inf')
         for move in possible_moves:
