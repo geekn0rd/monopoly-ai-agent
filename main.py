@@ -137,6 +137,8 @@ def minimax(state, depth=3, max_player=True):
         for move in possible_moves:
             # Make the move in a copy of the state
             new_state = state.make_move(move)
+            # We should also switch the player
+            new_state.switch_player()
             # Recursively call minimax on the new state with depth reduced by 1
             eval, _ = minimax(new_state, depth - 1, False)
             if eval > max_eval:
@@ -148,6 +150,8 @@ def minimax(state, depth=3, max_player=True):
         for move in possible_moves:
             # Make the move in a copy of the state
             new_state = state.make_move(move)
+            # We should also switch the player
+            new_state.switch_player()
             # Recursively call minimax on the new state with depth reduced by 1
             eval, _ = minimax(new_state, depth - 1, True)
             if eval < min_eval:
