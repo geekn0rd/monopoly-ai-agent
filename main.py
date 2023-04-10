@@ -115,9 +115,9 @@ class MonopolyGame:
             return True
         return False
     
-    def evaluate_utility(self):
-        curr_player = self.players[self.current_player]
-        # Evaluate the utility of the current game state for the current player
+    def evaluate_utility(self, player):
+        curr_player = self.players[player]
+        # Evaluate the utility of the desired player
         return curr_player.net_worth(self.board)
 
     def switch_player(self):
@@ -126,10 +126,10 @@ class MonopolyGame:
         self.current_player %= 2
 
 
-def minimax(state, depth=3, max_player=True):
+def minimax(main_player, state, depth=3, max_player=True):
     # Minimax algorithm to search for the best move
     if state.is_terminal() or depth == 0:
-        return state.evaluate_utility(), None
+        return state.evaluate_utility(main_player), None
     best_move = None
     possible_moves, _ = state.get_possible_moves()
     if max_player:
@@ -137,8 +137,9 @@ def minimax(state, depth=3, max_player=True):
         for move in possible_moves:
             # Make the move in a copy of the state
             new_state = state.make_move(move)
+            new_state.switch_player()
             # Recursively call minimax on the new state with depth reduced by 1
-            eval, _ = minimax(new_state, depth - 1, False)
+            eval, _ = minimax(main_player, new_state, depth - 1, False)
             if eval > max_eval:
                 max_eval = eval
                 best_move = move
@@ -148,8 +149,10 @@ def minimax(state, depth=3, max_player=True):
         for move in possible_moves:
             # Make the move in a copy of the state
             new_state = state.make_move(move)
+            # Switch to the next player
+            new_state.switch_player()
             # Recursively call minimax on the new state with depth reduced by 1
-            eval, _ = minimax(new_state, depth - 1, True)
+            eval, _ = minimax(main_player, new_state, depth - 1, True)
             if eval < min_eval:
                 max_eval = eval
                 best_move = move
@@ -166,7 +169,7 @@ def play(state):
             print(curr_player)
             # possible_moves, _ = self.get_possible_moves()
             # possible_moves = [possible_moves]
-            _, best_action = minimax(state)
+            _, best_action = minimax(state.current_player, state)
             # action, _ = self.get_possible_moves()
             state = state.make_move(best_action)
             print(state.players[state.current_player])
