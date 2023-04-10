@@ -54,7 +54,12 @@ class MonopolyGame:
         property1 = Property("Property 1", 1, 200, 20)
         property2 = Property("Property 2", 2, 300, 30)
         property3 = Property("Property 3", 3, 400, 40)
-        self.board = [go, property1, property2, property3]
+        property4 = Property("Property 4", 4, 500, 40)
+        property5 = Property("Property 5", 5, 800, 40)
+        property6 = Property("Property 6", 6, 700, 40)
+        property7 = Property("Property 7", 7, 800, 40)
+        property8 = Property("Property 8", 8, 900, 40)
+        self.board = [go, property1, property2, property3, property4, property5, property6, property7, property8]
 
     def initialize_players(self):
         # Initialize the players with their starting positions, money, and other attributes
@@ -96,7 +101,6 @@ class MonopolyGame:
             if curr_prop.owner == self.current_player:
                 return 0, "make house and hotel"
             elif curr_prop.owner == None:
-
                 return 1, f"buy or pass, prop, pos = {curr_position}"
             else:
                 return 2, "pay rent to the owner"
@@ -120,23 +124,37 @@ class MonopolyGame:
         self.current_player %= 2
 
 
-def minimax(state, depth=3):
+def minimax(state, depth=3, max_player=True):
     # Minimax algorithm to search for the best move
     if state.is_terminal() or depth == 0:
         return state.evaluate_utility(), None
-    max_eval = float('-inf')
     best_move = None
     possible_moves, _ = state.get_possible_moves()
     possible_moves = [possible_moves]
-    for move in possible_moves:
-        # Make the move in a copy of the state
-        new_state = state.make_move(move)
-        # Recursively call minimax on the new state with depth reduced by 1
-        eval, _ = minimax(new_state, depth - 1)
-        if eval > max_eval:
-            max_eval = eval
-            best_move = move
-    return max_eval, best_move
+    if max_player:
+        max_eval = float('-inf')
+        for move in possible_moves:
+            # Make the move in a copy of the state
+            new_state = state.make_move(move)
+            # Recursively call minimax on the new state with depth reduced by 1
+            eval, _ = minimax(new_state, depth - 1, False)
+            if eval > max_eval:
+                max_eval = eval
+                best_move = move
+        return max_eval, best_move       
+    else:
+        min_eval = float('inf')
+        for move in possible_moves:
+            # Make the move in a copy of the state
+            new_state = state.make_move(move)
+            # Recursively call minimax on the new state with depth reduced by 1
+            eval, _ = minimax(new_state, depth - 1, True)
+            if eval < min_eval:
+                max_eval = eval
+                best_move = move
+        return min_eval, best_move
+
+   
 
 
 def play(state):
