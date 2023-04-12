@@ -2,6 +2,20 @@
 import random
 from copy import deepcopy
 
+PROBS = {
+    2: 1 / 36,
+    3: 2 / 36,
+    4: 3 / 36,
+    5: 4 / 36,
+    6: 5 / 36,
+    7: 6 / 36,
+    8: 5 / 36,
+    9: 4 / 36,
+    10: 3 / 36,
+    11: 2 / 36,
+    12: 1 / 36,
+}
+    
 # Define the Player class
 class Player:
     def __init__(self, name, position, money):
@@ -14,7 +28,7 @@ class Player:
         # Roll the dice and return the result
         dice1 = random.randint(1, 6)
         dice2 = random.randint(1, 6)
-        return dice1, dice2
+        return (dice1, dice2)
     
     def net_worth(self, props):
         return self.money + sum([props[i].price for i in self.properties]) + sum([props[i].rent for i in self.properties])
@@ -91,11 +105,6 @@ class MonopolyGame:
         # Get the possible moves available to the current player
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
-        # Update the player's position based on the dice roll result
-        dice_result = curr_player.roll_dice()
-        total = sum(dice_result)
-        curr_position = (curr_position + total) % len(self.board)
-        curr_player.position = curr_position
         curr_prop = self.board[curr_position]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
@@ -108,6 +117,13 @@ class MonopolyGame:
                 return [2], "pay rent to the owner"
         return [3], "nothing chill"
     
+    def move_player(self, dice_result):
+        curr_player = self.players[self.current_player]
+        curr_position = curr_player.position
+        # Update the player's position based on the dice roll result
+        curr_position = (curr_position + dice_result) % len(self.board)
+        curr_player.position = curr_position
+
     def is_terminal(self):
         # Check if the game has reached a terminal state
         curr_player = self.players[self.current_player]
@@ -126,59 +142,76 @@ class MonopolyGame:
         self.current_player %= 2
 
 
-def minimax(state, depth=3, max_player=True):
+def minimax(main_player, state, depth=4, chance=False):
     # Minimax algorithm to search for the best move
+    if state.current_player == main_player:
+        node = "max"
+    else:
+        node = "min"    
     if state.is_terminal() or depth == 0:
         return state.evaluate_utility(), None
     best_move = None
     possible_moves, _ = state.get_possible_moves()
-    if max_player:
-        max_eval = float('-inf')
-        for move in possible_moves:
-            # Make the move in a copy of the state
-            new_state = state.make_move(move)
-            # We should also switch the player
-            new_state.switch_player()
-            # Recursively call minimax on the new state with depth reduced by 1
-            eval, _ = minimax(new_state, depth - 1, False)
-            if eval > max_eval:
-                max_eval = eval
-                best_move = move
-        return max_eval, best_move       
+    if chance:
+        expected = 0
+        for dice in range(2, 13):
+            state.move_player(dice)
+            new_state = state
+            eval, _ = minimax(main_player, new_state, depth - 1, False)
+            expected += eval * PROBS[dice]
+        return expected, None
     else:
-        min_eval = float('inf')
-        for move in possible_moves:
-            # Make the move in a copy of the state
-            new_state = state.make_move(move)
-            # We should also switch the player
-            new_state.switch_player()
-            # Recursively call minimax on the new state with depth reduced by 1
-            eval, _ = minimax(new_state, depth - 1, True)
-            if eval < min_eval:
-                max_eval = eval
-                best_move = move
-        return min_eval, best_move
-
-   
-
+        if node == "max":
+            max_eval = float('-inf')
+            for move in possible_moves:
+                # Make the move in a copy of the state
+                new_state = state.make_move(move)
+                # We should also switch the player
+                new_state.switch_player()
+                # Recursively call minimax on the new state with depth reduced by 1
+                eval, _ = minimax(main_player,new_state, depth - 1, True)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
+            return max_eval, best_move       
+        else:
+            min_eval = float('inf')
+            for move in possible_moves:
+                # Make the move in a copy of the state
+                new_state = state.make_move(move)
+                # We should also switch the player
+                new_state.switch_player()
+                # Recursively call minimax on the new state with depth reduced by 1
+                eval, _ = minimax(main_player, new_state, depth - 1, True)
+                if eval < min_eval:
+                    max_eval = eval
+                    best_move = move
+            return min_eval, best_move
 
 def play(state):
+        num_of_rounds = 0
         # Main game loop to play the game
         while not state.game_over:
             curr_player = state.players[state.current_player]
-            curr_position = curr_player.position
             print(curr_player)
+            d1, d2 = curr_player.roll_dice()
+            print(f"{curr_player.name} rolls dice: {(d1, d2)}")
+            state.move_player(d1 + d2)
+            print(f"{curr_player.name} lands on {curr_player.position}!")
             # possible_moves, _ = self.get_possible_moves()
             # possible_moves = [possible_moves]
-            _, best_action = minimax(state)
+            _, best_action = minimax(state.current_player, state)
             # action, _ = self.get_possible_moves()
             state = state.make_move(best_action)
+            print(f"{curr_player.name} decided and done an acion.")
             print(state.players[state.current_player])
             #print(self.board[curr_position])
             if state.is_terminal():
                 state.game_over = True
             else:
                 state.switch_player()
+            num_of_rounds += 1
+            print("====================================================")
         print(f"{state.players[state.current_player].name} Lost :)")   
 
 # Driver code to start the Monopoly game
