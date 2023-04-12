@@ -39,13 +39,13 @@ class MonopolyGame:
         curr_player = new_players[self.current_player]
         curr_position = curr_player.position
         curr_prop = new_board[curr_position]
-        if action in [0, -1]:
+        if action is 0:
             pass
-        elif action == 1:
+        elif action is 1:
             curr_player.money -= curr_prop.price
             curr_player.properties.append(curr_position)
             curr_prop.owner = self.current_player    
-        elif action == 2:
+        elif action is 2:
             curr_player.money -= curr_prop.rent
             new_players[curr_prop.owner].money += curr_prop.rent
         
@@ -58,14 +58,14 @@ class MonopolyGame:
         curr_prop = self.board[curr_position]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
-                return [0], "make house and hotel"
+                return [3, 4]
             elif curr_prop.owner == None:
                 if curr_player.money > curr_prop.price:
-                    return [1, -1], f"buy or pass"
-                return [-1], "can't buy"
+                    return [1, 0]
+                return [0]
             else:
-                return [2], "pay rent to the owner"
-        return [3], "nothing chill"
+                return [2]
+        return [0]
     
     def move_player(self, dice_result):
         curr_player = self.players[self.current_player]
