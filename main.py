@@ -18,10 +18,10 @@ PROBS = {
 # Encodings of what each action number mean
 ACTIONS = {
     0: "nothing",
-    1: "buy prop",
-    2: "pay rent",
-    3: "build house",
-    4: "build hotel",
+    1: "buys prop",
+    2: "pays rent",
+    3: "builds house",
+    4: "builds hotel",
 }
 
 def min_node(state, main_player, possible_moves, depth):
@@ -34,7 +34,7 @@ def min_node(state, main_player, possible_moves, depth):
         # Recursively call expectiminimax  on the new state with depth reduced by 1
         eval, _ = expectiminimax(main_player, new_state, depth - 1, True)
         if eval < min_eval:
-            max_eval = eval
+            min_eval = eval
             best_move = move
     return min_eval, best_move
 
@@ -52,7 +52,7 @@ def max_node(state, main_player, possible_moves, depth):
             best_move = move
     return max_eval, best_move
  
-def expectiminimax (main_player, state, depth=4, chance=False):
+def expectiminimax(main_player, state, depth=4, chance=False):
     # expectiminimax  algorithm to search for the best move
     if state.current_player == main_player:
         node = max_node
@@ -81,13 +81,13 @@ def play(state):
             d1, d2 = curr_player.roll_dice()
             print(f"{curr_player.name} rolls dice: {(d1, d2)}")
             state.move_player(d1 + d2)
-            print(f"{curr_player.name} lands on {curr_player.position}!")
+            print(f"{curr_player.name} lands on {curr_player.position}!", end=", ")
             # possible_moves, _ = self.get_possible_moves()
             # possible_moves = [possible_moves]
             _, best_action = expectiminimax(state.current_player, state)
             # action, _ = self.get_possible_moves()
             state = state.make_move(best_action)
-            print(f"{curr_player.name} did {ACTIONS[best_action]}.")
+            print(f"{curr_player.name} {ACTIONS[best_action]}.")
             print(state.players[state.current_player])
             #print(self.board[curr_position])
             if state.is_terminal():
