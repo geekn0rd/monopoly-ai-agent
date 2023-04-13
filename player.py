@@ -24,5 +24,5 @@ class Player:
         return self.money + sum([props[i].price for i in self.properties]) + sum([props[i].rent for i in self.properties])
     
     def __str__(self):
-        return f"{self.name} (Position: {self.position}, Money: {self.money}, Properties: {self.properties})"
+        return f"{self.name} (Position: {self.position}, Money: {self.money}$, Properties: {self.properties})"
 
