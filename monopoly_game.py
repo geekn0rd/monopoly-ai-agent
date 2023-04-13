@@ -11,19 +11,17 @@ class MonopolyGame:
         self.current_player = current_player  # Index of the current player in the players list
         self.game_over = game_over  # Boolean flag to indicate if the game is over
     
-    def initialize_board(self):
-        # Initialize the game board with properties, cards, and other game elements
-        # Example: Create three properties with initial attributes
-        go = Property("Go", 0, 0, 0, False)
-        property1 = Property("Property 1", 1, 200, 20)
-        property2 = Property("Property 2", 2, 300, 30)
-        property3 = Property("Property 3", 3, 400, 40)
-        property4 = Property("Property 4", 4, 500, 50)
-        property5 = Property("Property 5", 5, 800, 60)
-        property6 = Property("Property 6", 6, 700, 70)
-        property7 = Property("Property 7", 7, 800, 80)
-        property8 = Property("Property 8", 8, 900, 90)
-        self.board = [go, property1, property2, property3, property4, property5, property6, property7, property8]
+    def initialize_board(self, file_name):
+        # Initialize the game board from a csv file
+        with open(file_name) as file:
+            next(file)
+            for line in file:
+                name, space, color, position, price, build_price, rent = line.rstrip().split(",")
+                self.board.append(
+                    Property(name, space, color, int(position), int(price), int(rent), int(build_price))
+                    )
+        
+        
 
     def initialize_players(self):
         # Initialize the players with their starting positions, money, and other attributes

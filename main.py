@@ -17,7 +17,7 @@ PROBS = {
 
 # Encodings of what each action number mean
 ACTIONS = {
-    0: "nothing",
+    0: "does nothing",
     1: "buys prop",
     2: "pays rent",
     3: "builds house",
@@ -102,5 +102,5 @@ def play(state):
 if __name__ == "__main__":
     game = MonopolyGame()
     game.initialize_players()
-    game.initialize_board()
+    game.initialize_board("board.csv")
     play(game)

@@ -1,0 +1,41 @@
+Name,Space,Color,Position,Price,PriceBuild,Rent
+Go,Go,None,0,0,0,0
+Mediterranean Avenue,Street,Brown,1,60,50,2
+Community Chest,Chest,None,2,0,0,0
+Baltic Avenue,Street,Brown,3,60,50,4
+Income Tax,Tax,None,4,200,0,200
+Reading Railroad,Railroad,None,5,200,0,25
+Oriental Avenue,Street,LightBlue,6,100,50,6
+Chance,Chance,None,7,0,0,0
+Vermont Avenue,Street,LightBlue,8,100,50,6
+Connecticut Avenue,Street,LightBlue,9,120,50,8
+Jail,Jail,None,10,0,0,0
+St. Charles Place,Street,Pink,11,140,100,10
+Electric Company,Utility,None,12,150,0,4
+States Avenue,Street,Pink,13,140,100,10
+Virginia Avenue,Street,Pink,14,160,100,12
+Pennsylvania Railroad,Railroad,None,15,200,0,25
+St. James Place,Street,Orange,16,180,100,14
+Community Chest,Chest,None,17,0,0,0
+Tennessee Avenue,Street,Orange,18,180,100,14
+New York Avenue,Street,Orange,19,200,100,16
+Free Parking,Parking,None,20,0,0,0
+Kentucky Avenue,Street,Red,21,220,150,18
+Chance,Chance,None,22,0,0,0
+Indiana Avenue,Street,Red,23,220,150,18
+Illinois Avenue,Street,Red,24,240,150,20
+B. & O. Railroad,Railroad,None,25,200,0,25
+Atlantic Avenue,Street,Yellow,26,260,150,22
+Ventnor Avenue,Street,Yellow,27,260,150,22
+Water Works,Utility,None,28,150,0,4
+Marvin Gardens,Street,Yellow,29,280,150,24
+Go To Jail,GoToJail,None,30,0,0,0
+Pacific Avenue,Street,Green,31,300,200,26
+North Carolina Avenue,Street,Green,32,300,200,26
+Community Chest,Chest,None,33,0,0,0
+Pennsylvania Avenue,Street,Green,34,320,200,28
+Short Line,Railroad,None,35,200,0,25
+Chance,Chance,None,36,0,0,0
+Park Place,Street,Blue,37,350,200,35
+Luxury Tax,Tax,None,38,100,0,75
+Boardwalk,Street,Blue,39,400,200,50
