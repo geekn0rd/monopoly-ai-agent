@@ -5,15 +5,15 @@ from math import ceil
 
 # Define the Monopoly game class
 class MonopolyGame:
-    def __init__(self, board=[], players=[], current_player=0, game_over=False):
-        # Initialize the game state
+    def __init__(self, board: list=[], players: list=[], current_player: int=0, game_over: bool=False):
+        # Initializing the game state
         self.board = board  # List to represent the game board
         self.players = players  # List to represent the players
         self.current_player = current_player  # Index of the current player in the players list
         self.game_over = game_over  # Boolean flag to indicate if the game is over
     
-    def initialize_board(self, file_name):
-        # Initialize the game board from a csv file
+    def initialize_board(self, file_name: str) -> None:
+        # Initializing the game board from a csv file
         with open(file_name) as file:
             next(file)
             for line in file:
@@ -24,20 +24,20 @@ class MonopolyGame:
         
         
 
-    def initialize_players(self):
-        # Initialize the players with their starting positions, money, and other attributes
-        # Example: Create two players with initial attributes
+    def initialize_players(self) -> None:
+        # Initializing two players with their starting positions, money, and other attributes
         player1 = Player("P1", 0, 1500)
         player2 = Player("P2", 0, 1500)
         self.players = [player1, player2]
 
-    def make_move(self, action):
-        # Update the game state based on the action taken by the current player
+    def take_action(self, action: int):
+        # Updating the game state based on the action taken by the current player
         new_players = deepcopy(self.players)
         new_board = deepcopy(self.board)
         curr_player = new_players[self.current_player]
         curr_position = curr_player.position
         curr_prop = new_board[curr_position]
+        # Do the appropriate changes for the action
         if action == 0:
             pass
         elif action == 1:
@@ -66,8 +66,8 @@ class MonopolyGame:
             curr_player.turns_in_jail = 0       
         return MonopolyGame(new_board, new_players, self.current_player, self.game_over)
     
-    def get_possible_moves(self):
-        # Get the possible moves available to the current player
+    def get_possible_actions(self) -> list:
+        # Get the possible actions available to the current player
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
         curr_prop = self.board[curr_position]
@@ -79,7 +79,7 @@ class MonopolyGame:
             return [5, 6]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
-                if curr_prop.level < 4:
+                if curr_prop.level < 5:
                     return [3, 0]
                 return [0]
             elif curr_prop.owner == None:
@@ -92,7 +92,8 @@ class MonopolyGame:
                 return [4]
         return [0]
     
-    def move_player(self, dice_result):
+    def move_player(self, dice_result:int) -> None:
+        # Pass if the player is in jail
         if self.players[self.current_player].in_jail:
             return
         curr_player = self.players[self.current_player]
@@ -101,7 +102,7 @@ class MonopolyGame:
         curr_position = (curr_position + dice_result) % len(self.board)
         curr_player.position = curr_position
 
-    def is_terminal(self):
+    def is_terminal(self) -> bool:
         # Check if the game has reached a terminal state
         curr_player = self.players[self.current_player]
         if curr_player.money <= 0:

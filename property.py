@@ -1,6 +1,6 @@
 # Define the Property class
 class Property:
-    def __init__(self, name, space, color, position, price, rent, build_price):
+    def __init__(self, name: str, space: str, color: str, position: int, price: int, rent: int, build_price: int):
         self.name = name
         self.space = space
         self.color = color
@@ -12,8 +12,8 @@ class Property:
         if space in ["Street", "Railroad", "Utility"]:
             self.ownable = True
             self.owner = None
-            self.level = 0
+            self.level = 1
     
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} (Price: {self.price}, Rent: {self.rent})"
 
