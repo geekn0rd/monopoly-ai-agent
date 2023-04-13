@@ -27,8 +27,9 @@ ACTIONS = {
     7: "is freed from jail",
 }
 
-def min_node(state, main_player, possible_moves, depth):
+def min_node(state, main_player, depth):
     min_eval = float('inf')
+    possible_moves = state.get_possible_moves()
     for move in possible_moves:
         # Make the move in a copy of the state
         new_state = state.make_move(move)
@@ -41,8 +42,9 @@ def min_node(state, main_player, possible_moves, depth):
             best_move = move
     return min_eval, best_move
 
-def max_node(state, main_player, possible_moves, depth):
+def max_node(main_player, state, depth):
     max_eval = float('-inf')
+    possible_moves = state.get_possible_moves()
     for move in possible_moves:
         # Make the move in a copy of the state
         new_state = state.make_move(move)
@@ -55,7 +57,7 @@ def max_node(state, main_player, possible_moves, depth):
             best_move = move
     return max_eval, best_move
 
-def chance_node(state, main_player, possible_moves, depth):
+def chance_node(main_player, state, depth):
     expected_utility = 0
     for dice in range(2, 13):
         state.move_player(dice)
@@ -74,8 +76,7 @@ def expectiminimax(main_player, state, depth=4, chance=False):
         node = max_node
     else:
         node = min_node 
-    possible_moves = state.get_possible_moves()
-    return node(state, main_player, possible_moves, depth)
+    return node(main_player, state, depth)
 
 def play(state):
         num_of_rounds = 0
@@ -92,6 +93,7 @@ def play(state):
             # possible_moves, _ = self.get_possible_moves()
             # possible_moves = [possible_moves]
             _, best_action = expectiminimax(state.current_player, state)
+            
             # action, _ = self.get_possible_moves()
             state = state.make_move(best_action)
             print(f"{curr_player.name} {ACTIONS[best_action]}.")
