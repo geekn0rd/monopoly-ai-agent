@@ -54,26 +54,28 @@ def max_node(state, main_player, possible_moves, depth):
             max_eval = eval
             best_move = move
     return max_eval, best_move
- 
+
+def chance_node(state, main_player, possible_moves, depth):
+    expected_utility = 0
+    for dice in range(2, 13):
+        state.move_player(dice)
+        new_state = state
+        eval, _ = expectiminimax(main_player, new_state, depth - 1, False)
+        expected_utility += eval * PROBS[dice]
+    return expected_utility, None
+
 def expectiminimax(main_player, state, depth=4, chance=False):
     # expectiminimax  algorithm to search for the best move
-    if state.current_player == main_player:
+    if state.is_terminal() or depth == 0:
+        return state.evaluate_utility(), None
+    if chance:
+        node = chance_node
+    elif state.current_player == main_player:
         node = max_node
     else:
         node = min_node 
-    if state.is_terminal() or depth == 0:
-        return state.evaluate_utility(), None
     possible_moves = state.get_possible_moves()
-    if chance:
-        expected = 0
-        for dice in range(2, 13):
-            state.move_player(dice)
-            new_state = state
-            eval, _ = expectiminimax(main_player, new_state, depth - 1, False)
-            expected += eval * PROBS[dice]
-        return expected, None
-    else:
-        return node(state, main_player, possible_moves, depth)
+    return node(state, main_player, possible_moves, depth)
 
 def play(state):
         num_of_rounds = 0
