@@ -7,6 +7,9 @@ class Player:
         self.position = position
         self.money = money
         self.properties = []
+        self.in_jail = False
+        self.turns_in_jail = 0
+        self.rolled_doubles = False
     
     def pay(self, amount):
         self.money -= amount
@@ -18,6 +21,7 @@ class Player:
         # Roll the dice and return the result
         dice1 = random.randint(1, 6)
         dice2 = random.randint(1, 6)
+        self.rolled_doubles = True if dice1 == dice2 else False
         return (dice1, dice2)
     
     def net_worth(self, props):

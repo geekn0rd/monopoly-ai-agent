@@ -37,16 +37,28 @@ class MonopolyGame:
         curr_player = new_players[self.current_player]
         curr_position = curr_player.position
         curr_prop = new_board[curr_position]
-        if action is 0:
+        if action == 0:
             pass
-        elif action is 1:
-            curr_player.money -= curr_prop.price
+        elif action == 1:
+            curr_player.pay(curr_prop.price)
             curr_player.properties.append(curr_position)
             curr_prop.owner = self.current_player    
-        elif action is 2:
-            curr_player.money -= curr_prop.rent
-            new_players[curr_prop.owner].money += curr_prop.rent
-        
+        elif action == 2:
+            curr_player.pay(curr_prop.rent)
+            new_players[curr_prop.owner].receive(curr_prop.rent)
+        elif action == 4:
+            curr_player.position = 10
+            curr_player.in_jail = True
+            curr_player.turns_in_jail += 1
+        elif action == 5:
+            curr_player.turns_in_jail += 1
+        elif action == 6:
+            curr_player.pay(50)
+            curr_player.in_jail = False
+            curr_player.turns_in_jail = 0
+        elif action == 7:
+            curr_player.in_jail = False
+            curr_player.turns_in_jail = 0       
         return MonopolyGame(new_board, new_players, self.current_player, self.game_over)
     
     def get_possible_moves(self):
@@ -54,18 +66,28 @@ class MonopolyGame:
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
         curr_prop = self.board[curr_position]
+        if curr_player.in_jail:
+            if curr_player.rolled_doubles:
+                return [7]
+            if curr_player.turns_in_jail >= 3:
+                return [6]
+            return [5, 6]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
-                return [3, 4]
+                return [3]
             elif curr_prop.owner == None:
                 if curr_player.money > curr_prop.price:
                     return [1, 0]
                 return [0]
             else:
                 return [2]
+        if curr_prop.space == "GoToJail":
+                return [4]
         return [0]
     
     def move_player(self, dice_result):
+        if self.players[self.current_player].in_jail:
+            return
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
         # Update the player's position based on the dice roll result

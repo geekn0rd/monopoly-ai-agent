@@ -20,8 +20,11 @@ ACTIONS = {
     0: "does nothing",
     1: "buys prop",
     2: "pays rent",
-    3: "builds house",
-    4: "builds hotel",
+    3: "upgrades prop",
+    4: "goes to jail",
+    5: "stays in jail",
+    6: "bails out of jail",
+    7: "is freed from jail",
 }
 
 def min_node(state, main_player, possible_moves, depth):
@@ -78,6 +81,8 @@ def play(state):
         while not state.game_over:
             curr_player = state.players[state.current_player]
             print(curr_player)
+            if curr_player.in_jail:
+                print(f"turns in jail {curr_player.turns_in_jail}")
             d1, d2 = curr_player.roll_dice()
             print(f"{curr_player.name} rolls dice: {(d1, d2)}")
             state.move_player(d1 + d2)
