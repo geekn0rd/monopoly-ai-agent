@@ -80,11 +80,11 @@ def play(state):
         # Main game loop to play the game
         while not state.game_over:
             curr_player = state.players[state.current_player]
-            print(f"{curr_player.name} is on {curr_player.position} and has {curr_player.money}$.")
+            print(f"{curr_player.name} is on {curr_player.position} and has {curr_player.money}$,")
             if curr_player.in_jail:
                 print(f"turns in jail {curr_player.turns_in_jail}")
             d1, d2 = curr_player.roll_dice()
-            print(f"{curr_player.name} rolls dice: {(d1, d2)}")
+            print(f"{curr_player.name} rolls dice: {(d1, d2)},")
             state.move_player(d1 + d2)
             print(f"{curr_player.name} lands on {curr_player.position}!", end=", ")
             # possible_moves, _ = self.get_possible_moves()

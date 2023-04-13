@@ -12,6 +12,7 @@ class Property:
         if space in ["Street", "Railroad", "Utility"]:
             self.ownable = True
             self.owner = None
+            self.level = 0
     
     def __str__(self):
         return f"{self.name} (Price: {self.price}, Rent: {self.rent})"

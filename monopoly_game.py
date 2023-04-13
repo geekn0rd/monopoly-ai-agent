@@ -1,6 +1,7 @@
 from copy import deepcopy
 from property import *
 from player import *
+from math import ceil
 
 # Define the Monopoly game class
 class MonopolyGame:
@@ -46,6 +47,10 @@ class MonopolyGame:
         elif action == 2:
             curr_player.pay(curr_prop.rent)
             new_players[curr_prop.owner].receive(curr_prop.rent)
+        elif action == 3:
+            curr_prop.rent *= 1.5
+            curr_prop.rent = ceil(curr_prop.rent)
+            curr_prop.level += 1
         elif action == 4:
             curr_player.position = 10
             curr_player.in_jail = True
@@ -74,7 +79,9 @@ class MonopolyGame:
             return [5, 6]
         if curr_prop.ownable:
             if curr_prop.owner == self.current_player:
-                return [3]
+                if curr_prop.level < 4:
+                    return [3, 0]
+                return [0]
             elif curr_prop.owner == None:
                 if curr_player.money > curr_prop.price:
                     return [1, 0]
