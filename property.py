@@ -2,7 +2,7 @@ from math import ceil
 
 # Define the Property class
 class Property:
-    def __init__(self, name: str, space: str, color: str, position: int, price: int, rent: int, build_price: int):
+    def __init__(self, name: str, space: str, color: str, position: int, price: int, rent: int):
         self.name = name
         self.space = space
         self.color = color

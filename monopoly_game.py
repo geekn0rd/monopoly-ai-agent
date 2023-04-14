@@ -16,9 +16,9 @@ class MonopolyGame:
         with open(file_name) as file:
             next(file)
             for line in file:
-                name, space, color, position, price, build_price, rent = line.rstrip().split(",")
+                name, space, color, position, price, _, rent = line.rstrip().split(",")
                 self.board.append(
-                    Property(name, space, color, int(position), int(price), int(rent), int(build_price))
+                    Property(name, space, color, int(position), int(price), int(rent))
                     )
         
         
