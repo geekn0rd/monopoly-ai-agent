@@ -38,5 +38,8 @@ class Player():
         return net_worth
 
     def __str__(self) -> str:
-        return f"{self.name} (Position: {self.position}, Money: {self.money}$, Properties: {self.properties})"
 
+        return f"{self.name}\n" \
+            f"Position: {self.position}\n" \
+            f"Money: {self.money}$\n" \
+            f"Properties: {self.properties}"
