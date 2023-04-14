@@ -82,8 +82,8 @@ class MonopolyGame:
                 return [6]
             return [5, 6]
         if curr_prop.ownable:
-            if curr_prop.owner == self.current_player:
-                if curr_prop.level < 5:
+            if curr_prop.owner == self.current_player and curr_prop.upgradable:
+                if curr_player.money > curr_prop.build_price:
                     return [3, 0]
                 return [0]
             elif curr_prop.owner == None:
