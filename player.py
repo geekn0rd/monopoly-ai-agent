@@ -36,7 +36,7 @@ class Player():
             net_worth += props[i].rent
         # Return the net worth as an integer
         return net_worth
-
+    
     def __str__(self) -> str:
 
         return f"{self.name}\n" \

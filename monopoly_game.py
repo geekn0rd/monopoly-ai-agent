@@ -6,11 +6,12 @@ import pandas as pd
 
 # Define the Monopoly game class
 class MonopolyGame:
-    def __init__(self, board: list=[], players: list=[], current_player: int=0, game_over: bool=False):
+    def __init__(self, board: list=[], players: list=[], current_player: int=0, other_player: int=1, game_over: bool=False):
         # Initializing the game state
         self.board = board  # List to represent the game board
         self.players = players  # List to represent the players
         self.current_player = current_player  # Index of the current player in the players list
+        self.other_player = other_player
         self.game_over = game_over  # Boolean flag to indicate if the game is over
     
     def initialize_board(self, file_name: str):
@@ -112,10 +113,11 @@ class MonopolyGame:
             return True
         return False
     
-    def evaluate_utility(self):
+    def evaluate_utility(self) -> int:
         curr_player = self.players[self.current_player]
+        curr_net_worth = curr_player.net_worth(self.board)
         # Evaluate the utility of the current game state for the current player
-        return curr_player.net_worth(self.board)
+        return curr_net_worth
 
     def switch_player(self):
         # Switch to the next player's turn
