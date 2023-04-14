@@ -9,6 +9,7 @@ class Property():
         self.rent = rent
         self.build_price = build_price
         self.ownable = False
+        self.max_rent = self.rent * 5 * 1.5
         self.build_price = self.price // 2
         self.upgradable = True if self.build_price > 0 else False
         if space in ["Street", "Railroad", "Utility"]:

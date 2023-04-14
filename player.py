@@ -25,17 +25,18 @@ class Player():
         return total
     
     def net_worth(self, props) -> int:
-        # Calculate the net worth of the player, which includes money and the total value of their properties and their rent
-        # Money is added first
-        net_worth = self.money 
-        # Then, iterate over each property owned by the player and add its price to the net worth
-        for i in self.properties:
-            net_worth += props[i].price
-        # Finally, iterate over each property owned by the player and add its rent to the net worth
-        for i in self.properties:
-            net_worth += props[i].rent
-        # Return the net worth as an integer
-        return net_worth
+        # Calculate current rent
+        current_rent = sum([props[i].rent for i in self.properties])
+        
+        # Calculate potential rent with all properties fully developed
+        potential_rent = sum([props[i].max_rent for i in self.properties])
+        
+        # Calculate current property value
+        prop_value = sum([props[i].price for i in self.properties])
+        
+        # Calculate net worth
+        return self.money + current_rent + (potential_rent - current_rent) + prop_value
+
     
     def __str__(self) -> str:
 
