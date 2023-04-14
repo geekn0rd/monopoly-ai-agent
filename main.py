@@ -63,7 +63,7 @@ def chance_node(main_player: int, state: MonopolyGame, depth: int) -> tuple:
     # Account for the all possible dice outcomes
     for dice in range(2, 13):
         state.move_player(dice)
-        new_state = state
+        new_state = deepcopy(state)
         # Recursively call expectiminimax on the new state with depth reduced by 1
         eval, _ = expectiminimax(main_player, new_state, depth - 1, False)
         expected_utility += eval * PROBS[dice]
@@ -96,13 +96,13 @@ def play(state: MonopolyGame) -> None:
             d1, d2 = curr_player.roll_dice()
             print(f"{curr_player.name} rolls dice: {(d1, d2)},")
             # Moving the player based on the dice outcome
-            pos_1 = curr_player.position
+            # pos_1 = curr_player.position
             state.move_player(d1 + d2)
-            pos_2 = curr_player.position
+            # pos_2 = curr_player.position
             print(f"{curr_player.name} lands on {curr_player.position}!", end=" ")
-            if pos_1 > pos_2:
-                curr_player.receive(200)
-                print("player passed Go it receives 200$")
+            # if pos_1 > pos_2:
+            #     curr_player.receive(200)
+            #     print("player passed Go it receives 200$")
             # Determining the best possible action
             _, best_action = expectiminimax(state.current_player, state)
             
