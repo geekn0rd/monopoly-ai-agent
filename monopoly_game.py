@@ -2,6 +2,7 @@ from copy import deepcopy
 from property import *
 from player import *
 from math import ceil
+import pandas as pd
 
 # Define the Monopoly game class
 class MonopolyGame:
@@ -12,17 +13,19 @@ class MonopolyGame:
         self.current_player = current_player  # Index of the current player in the players list
         self.game_over = game_over  # Boolean flag to indicate if the game is over
     
-    def initialize_board(self, file_name: str) -> None:
+    def initialize_board(self, file_name: str):
         # Initializing the game board from a csv file
-        with open(file_name) as file:
-            next(file)
-            for line in file:
-                name, space, color, position, price, build_price, rent = line.rstrip().split(",")
-                self.board.append(
-                    Property(name, space, color, int(position), int(price), int(rent), int(build_price))
-                    )
-        
-        
+        df = pd.read_csv(file_name)
+
+        for row in df.itertuples():
+            name = row[1]
+            space = row[2]
+            position = row[4]
+            price = row[5]
+            build_price = row[6]
+            rent = row[7]
+            
+            self.board.append(Property(name, space, int(position), int(price), int(rent), int(build_price)))
 
     def initialize_players(self) -> None:
         # Initializing two players with their starting positions, money, and other attributes
@@ -41,28 +44,28 @@ class MonopolyGame:
         if action == 0:
             pass
         elif action == 1:
-            curr_player.pay(curr_prop.price)
+            curr_player.pay_money(curr_prop.price)
             curr_player.properties.append(curr_position)
             curr_prop.owner = self.current_player    
         elif action == 2:
-            curr_player.pay(curr_prop.rent)
-            new_players[curr_prop.owner].receive(curr_prop.rent)
+            curr_player.pay_money(curr_prop.rent)
+            new_players[curr_prop.owner].get_money(curr_prop.rent)
         elif action == 3:
             curr_prop.rent *= 1.5
             curr_prop.rent = ceil(curr_prop.rent)
             curr_prop.level += 1
         elif action == 4:
             curr_player.position = 10
-            curr_player.in_jail = True
+            curr_player.is_in_jail = True
             curr_player.turns_in_jail += 1
         elif action == 5:
             curr_player.turns_in_jail += 1
         elif action == 6:
-            curr_player.pay(50)
-            curr_player.in_jail = False
+            curr_player.pay_money(50)
+            curr_player.is_in_jail = False
             curr_player.turns_in_jail = 0
         elif action == 7:
-            curr_player.in_jail = False
+            curr_player.is_in_jail = False
             curr_player.turns_in_jail = 0       
         return MonopolyGame(new_board, new_players, self.current_player, self.game_over)
     
@@ -71,7 +74,7 @@ class MonopolyGame:
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
         curr_prop = self.board[curr_position]
-        if curr_player.in_jail:
+        if curr_player.is_in_jail:
             if curr_player.rolled_doubles:
                 return [7]
             if curr_player.turns_in_jail >= 3:
@@ -94,7 +97,7 @@ class MonopolyGame:
     
     def move_player(self, dice_result:int) -> None:
         # Pass if the player is in jail
-        if self.players[self.current_player].in_jail:
+        if self.players[self.current_player].is_in_jail:
             return
         curr_player = self.players[self.current_player]
         curr_position = curr_player.position
