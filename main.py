@@ -104,15 +104,16 @@ def play(state: MonopolyGame) -> None:
             # Taking the best action
             state = state.take_action(best_action)
             print(f"{curr_player.name} {ACTIONS[best_action]}.")
-            print(state.players[state.current_player])
+            #print(state.players[state.current_player])
 
             if state.is_terminal():
                 state.game_over = True
             else:
                 state.switch_player()
             num_of_rounds += 1
+            print(f"Round {num_of_rounds}")
             print("====================================================")
-        print(f"{state.players[0 if state.current_player else 1].name} Won :) rounds played: {num_of_rounds}")   
+        print(f"{state.players[0 if state.current_player else 1].name} Won!")   
 
 # Driver code to start the Monopoly game
 if __name__ == "__main__":
