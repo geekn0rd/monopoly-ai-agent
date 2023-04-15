@@ -16,7 +16,9 @@ class Property():
             self.ownable = True
             self.owner = None
             self.level = 1
-
+        if space in ["Community Chest", "Income Tax", "Chance", "Free Parking", "Go To Jail", "Luxury Tax"]:
+            self.ownable = False
+            self.owner = None
     
     def upgrade(self) -> None:
         self.rent *= 1.5
@@ -24,7 +26,7 @@ class Property():
         self.level += 1
         if self.level >= 5:
             self.upgradable = False
-    
+
     def __str__(self):
         # Format the string using f-strings and return it
         return f"{self.name} - Price: {self.price}$, Rent: {self.rent}$"

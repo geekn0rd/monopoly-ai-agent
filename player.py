@@ -37,9 +37,7 @@ class Player():
         # Calculate net worth
         return self.money + current_rent + (potential_rent - current_rent) + prop_value
 
-    
     def __str__(self) -> str:
-
         return f"{self.name}\n" \
             f"Position: {self.position}\n" \
             f"Money: {self.money}$\n" \
