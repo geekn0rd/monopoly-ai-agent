@@ -25,8 +25,13 @@ class MonopolyGame:
             price = row[5]
             build_price = row[6]
             rent = row[7]
+            rent1 = row[8]
+            rent2 = row[9]
+            rent3 = row[10]
+            rent4 = row[11]
+            rent5 = row[12]
             
-            self.board.append(Property(name, space, int(position), int(price), int(rent), int(build_price)))
+            self.board.append(Property(name, space, int(position), int(price), int(rent), int(build_price), int(rent1), int(rent2), int(rent3), int(rent4), int(rent5)))
 
     def initialize_players(self) -> None:
         # Initializing two players with their starting positions, money, and other attributes
@@ -105,8 +110,12 @@ class MonopolyGame:
         curr_position = curr_player.position
         # Update the player's position based on the dice roll result
         curr_position = (curr_position + dice_result) % len(self.board)
+        # Add 200 to the player's balance if they passed the "Go" cell
+        if curr_position < curr_player.position:
+            curr_player.money += 200
+            #print(f"{curr_player.name} collect 200$")
         curr_player.position = curr_position
-
+        
     def is_terminal(self) -> bool:
         # Check if the game has reached a terminal state
         curr_player = self.players[self.current_player]
