@@ -54,7 +54,7 @@ class MonopolyGame:
         elif action == 3:
             curr_prop.rent *= 1.5
             curr_prop.rent = ceil(curr_prop.rent)
-            curr_player.money -= curr_prop.build_price
+            curr_player.pay_money(curr_prop.build_price)
             curr_prop.level += 1
         elif action == 4:
             curr_player.position = 10
