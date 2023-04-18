@@ -69,7 +69,7 @@ def chance_node(main_player: int, state: MonopolyGame, depth: int) -> tuple:
         expected_utility += eval * PROBS[dice]
     return expected_utility, None
 
-def expectiminimax(main_player: int, state: MonopolyGame, depth: int=5, chance: bool=False) -> tuple:
+def expectiminimax(main_player: int, state: MonopolyGame, depth: int=8, chance: bool=False) -> tuple:
     # Expectiminimax algorithm to search for the best action
     if state.is_terminal() or depth == 0:
         return state.evaluate_utility(), None
