@@ -35,7 +35,7 @@ class Player():
         prop_value = sum([props[i].price for i in self.properties])
         
         # Calculate net worth
-        return self.money + current_rent + (potential_rent - current_rent) + prop_value
+        return self.money + current_rent + potential_rent + prop_value
 
     def __str__(self) -> str:
         return f"{self.name}\n" \
