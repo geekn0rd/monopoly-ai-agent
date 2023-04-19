@@ -120,5 +120,5 @@ def play(state: MonopolyGame) -> None:
 if __name__ == "__main__":
     game = MonopolyGame()
     game.initialize_players()
-    game.initialize_board("board2.csv")
+    game.initialize_board("board.csv")
     play(game)
